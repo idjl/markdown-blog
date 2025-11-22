@@ -1,0 +1,115 @@
+<article class="max-w-4xl mx-auto">
+  <!-- Post header -->
+  <header class="mb-8">
+    <h1 class="text-4xl font-bold text-text dark:text-white mb-4">
+      {{post.title}}
+    </h1>
+    
+    <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary dark:text-gray-400">
+      {{#if post.date}}
+      <time datetime="{{post.date}}">
+        {{post.date}}
+      </time>
+      {{/if}}
+      
+      {{#if post.author}}
+      <span>
+        作者: {{post.author}}
+      </span>
+      {{/if}}
+      
+      {{#if post.readingTime}}
+      <span>
+        {{post.readingTime}} 分钟阅读
+      </span>
+      {{/if}}
+      
+      {{#if post.wordCount}}
+      <span>
+        {{post.wordCount}} 字
+      </span>
+      {{/if}}
+    </div>
+    
+    {{#if post.category}}
+    <div class="mt-4">
+      <a href="/categories/{{post.category.slug}}/" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+        {{post.category}}
+      </a>
+    </div>
+    {{/if}}
+    
+    {{#if post.tags.length}}
+    <div class="mt-4 flex flex-wrap gap-2">
+      {{#each post.tags}}
+      <a href="/tags/{{slug}}/" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        {{this}}
+      </a>
+      {{/each}}
+    </div>
+    {{/if}}
+  </header>
+  
+  <!-- Post content -->
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    {{{post.content}}}
+  </div>
+  
+  <!-- Post navigation -->
+  <nav class="mt-12 flex justify-between items-center">
+    {{#if prevPost}}
+    <a href="{{prevPost.url}}" class="flex items-center text-primary hover:underline">
+      <span class="mr-2">←</span>
+      <div>
+        <div class="text-sm text-text-secondary dark:text-gray-400">上一篇</div>
+        <div class="font-medium">{{prevPost.title}}</div>
+      </div>
+    </a>
+    {{/if}}
+
+    {{#if nextPost}}
+    <a href="{{nextPost.url}}" class="flex items-center text-primary hover:underline ml-auto">
+      <div class="text-right">
+        <div class="text-sm text-text-secondary dark:text-gray-400">下一篇</div>
+        <div class="font-medium">{{nextPost.title}}</div>
+      </div>
+      <span class="ml-2">→</span>
+    </a>
+    {{/if}}
+  </nav>
+  
+  <!-- Comments -->
+  {{#if config.comments.enabled}}
+  <div class="mt-12">
+    <h3 class="text-2xl font-bold text-text dark:text-white mb-6">评论</h3>
+    <div id="comments" class="comments-container">
+      {{#if config.comments.provider}}
+        {{#if (eq config.comments.provider "utterances")}}
+        <script src="https://utteranc.es/client.js"
+          repo="{{config.comments.repo}}"
+          issue-term="{{config.comments.issueTerm}}"
+          theme="{{config.comments.theme}}"
+          crossorigin="anonymous"
+          async>
+        </script>
+        {{/if}}
+        {{#if (eq config.comments.provider "giscus")}}
+        <script src="https://giscus.app/client.js"
+          data-repo="{{config.comments.repo}}"
+          data-repo-id="{{config.comments.repoId}}"
+          data-category="{{config.comments.category}}"
+          data-category-id="{{config.comments.categoryId}}"
+          data-mapping="{{config.comments.mapping}}"
+          data-reactions-enabled="{{config.comments.reactionsEnabled}}"
+          data-emit-metadata="{{config.comments.emitMetadata}}"
+          data-theme="{{config.comments.theme}}"
+          data-lang="zh-CN"
+          crossorigin="anonymous"
+          async>
+        </script>
+        {{/if}}
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+</article>

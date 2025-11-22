@@ -1,0 +1,78 @@
+<div class="space-y-8">
+  <header class="text-center py-8">
+    <h1 class="text-4xl font-bold text-text dark:text-white mb-4">
+      分类: {{category.name}}
+    </h1>
+    <p class="text-lg text-text-secondary dark:text-gray-400">
+      共 {{category.count}} 篇文章
+    </p>
+  </header>
+  
+  <!-- Posts list -->
+  <div class="space-y-6">
+    {{#each posts}}
+    <article class="bg-surface rounded-lg shadow-sm hover:shadow-md transition-shadow p-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+        <h2 class="text-2xl font-bold text-text dark:text-white mb-2 md:mb-0">
+          <a href="{{url}}" class="hover:text-primary transition-colors">
+            {{title}}
+          </a>
+        </h2>
+        <time class="text-sm text-text-secondary dark:text-gray-400">
+          {{date}}
+        </time>
+      </div>
+      
+      {{#if description}}
+      <p class="text-text-secondary dark:text-gray-400 mb-4">
+        {{description}}
+      </p>
+      {{else}}
+      <p class="text-text-secondary dark:text-gray-400 mb-4">
+        {{excerpt}}
+      </p>
+      {{/if}}
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4 text-sm text-text-secondary dark:text-gray-400">
+          {{#if readingTime}}
+          <span>{{readingTime}} 分钟阅读</span>
+          {{/if}}
+          {{#if wordCount}}
+          <span>{{wordCount}} 字</span>
+          {{/if}}
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          {{#each tags}}
+          <a href="/tags/{{slug}}/" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            {{this}}
+          </a>
+          {{/each}}
+        </div>
+      </div>
+    </article>
+    {{/each}}
+  </div>
+  
+  <!-- Pagination -->
+  {{#if pagination}}
+  <nav class="flex justify-center items-center space-x-2">
+    {{#if pagination.hasPrev}}
+    <a href="{{pagination.prevUrl}}" class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+      上一页
+    </a>
+    {{/if}}
+    
+    <span class="px-4 py-2 text-gray-600 dark:text-gray-400">
+      第 {{pagination.current}} 页，共 {{pagination.total}} 页
+    </span>
+    
+    {{#if pagination.hasNext}}
+    <a href="{{pagination.nextUrl}}" class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+      下一页
+    </a>
+    {{/if}}
+  </nav>
+  {{/if}}
+</div>

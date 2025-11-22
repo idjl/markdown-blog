@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="{{config.language}}" class="{{#if config.theme.darkMode}}dark{{/if}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{meta.title}}</title>
+  <meta name="description" content="{{meta.description}}">
+  <meta name="keywords" content="{{meta.keywords}}">
+  <meta name="author" content="{{meta.author}}">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{meta.title}}">
+  <meta property="og:description" content="{{meta.description}}">
+  <meta property="og:type" content="{{meta.type}}">
+  <meta property="og:url" content="{{meta.url}}">
+  <meta property="og:image" content="{{meta.image}}">
+  <meta property="og:site_name" content="{{meta.siteName}}">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="{{meta.twitterCard}}">
+  <meta name="twitter:title" content="{{meta.title}}">
+  <meta name="twitter:description" content="{{meta.description}}">
+  <meta name="twitter:image" content="{{meta.image}}">
+  
+  <!-- Theme -->
+  <script>
+    // Theme detection
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/prism.css">
+  
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="{{config.title}} RSS" href="/rss.xml">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+</head>
+<body class="bg-background text-text min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-6">
+        <div class="flex items-center">
+          <a href="/" class="text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
+            {{config.title}}
+          </a>
+        </div>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            首页
+          </a>
+          <a href="/categories/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            分类
+          </a>
+          <a href="/tags/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            标签
+          </a>
+          <a href="/archives/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            归档
+          </a>
+          <a href="/search/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            搜索
+          </a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Theme toggle -->
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+          </button>
+          
+          <!-- Mobile menu -->
+          <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></span>
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></span>
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300"></span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile navigation -->
+      <nav id="mobile-menu" class="md:hidden pb-6 hidden">
+        <div class="flex flex-col space-y-4">
+          <a href="/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            首页
+          </a>
+          <a href="/categories/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            分类
+          </a>
+          <a href="/tags/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            标签
+          </a>
+          <a href="/archives/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            归档
+          </a>
+          <a href="/search/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            搜索
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Main content -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {{{content}}}
+  </main>
+  
+  <!-- Footer -->
+  <footer class="border-t border-gray-200 dark:border-gray-800 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
+          © {{currentYear}} {{config.author}}. Powered by 
+          <a href="https://github.com/yourusername/markdown-blog" class="text-primary hover:underline">
+            Markdown Blog
+          </a>
+        </div>
+        
+        <div class="flex space-x-6">
+          {{#if config.social.github}}
+          <a href="https://github.com/{{config.social.github}}" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            GitHub
+          </a>
+          {{/if}}
+          {{#if config.social.twitter}}
+          <a href="https://twitter.com/{{config.social.twitter}}" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            Twitter
+          </a>
+          {{/if}}
+          {{#if config.social.email}}
+          <a href="mailto:{{config.social.email}}" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            Email
+          </a>
+          {{/if}}
+          {{#if config.social.rss}}
+          <a href="/rss.xml" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            RSS
+          </a>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/prism.js"></script>
+</body>
+</html>
