@@ -1,9 +1,9 @@
 module.exports = {
   title: 'Markdown Blog',
   description: 'A modern static blog system built with Markdown',
-  author: 'Your Name',
-  url: 'https://idjl.github.io',
-  baseUrl: '/markdown-blog/',
+  author: 'idjl',
+  url: 'https://idjl.github.io/markdown-blog/',
+  baseUrl: 'https://idjl.github.io/markdown-blog/',
   language: 'zh-CN',
   timezone: 'Asia/Shanghai',
   
@@ -111,7 +111,7 @@ module.exports = {
     },
     sitemap: {
       enabled: true,
-      hostname: 'https://yourusername.github.io',
+      hostname: 'https://idjl.github.io/markdown-blog/',
       changefreq: 'weekly',
       priority: 0.8,
     },
