@@ -19,7 +19,7 @@ async function build() {
     }
     
     // Ensure output directory exists
-    const outputDir = config.outputDir || 'dist';
+    const outputDir = (config.build && config.build.outputDir) || 'dist';
     await fs.mkdir(outputDir, { recursive: true });
     
     // Create generator instance

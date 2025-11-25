@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "node scripts/dev.js",
-    "build": "node scripts/build.js",
+    "build": "tsc && node scripts/build.js",
     "preview": "node scripts/preview.js",
     "pre": "node scripts/preview.js",
     "clean": "rimraf dist",

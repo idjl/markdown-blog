@@ -11,7 +11,7 @@ export class StaticGenerator {
 
   constructor(config: BlogConfig) {
     this.config = config;
-    this.postManager = new PostManager(config);
+    this.postManager = new PostManager();
     this.templateEngine = new TemplateEngine(config);
   }
 

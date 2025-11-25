@@ -9,7 +9,8 @@ export class TemplateEngine {
 
   constructor(config: BlogConfig) {
     this.config = config;
-    this.loadTemplates();
+    this.loadDefaultTemplates();
+    void this.loadTemplates();
   }
 
   /**
