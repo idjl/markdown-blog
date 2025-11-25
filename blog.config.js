@@ -2,7 +2,7 @@ module.exports = {
   title: 'Markdown Blog',
   description: 'A modern static blog system built with Markdown',
   author: 'Your Name',
-  url: 'https://yourusername.github.io',
+  url: 'https://idjl.github.io',
   baseUrl: '/markdown-blog/',
   language: 'zh-CN',
   timezone: 'Asia/Shanghai',
@@ -124,4 +124,5 @@ module.exports = {
       backgroundColor: '#ffffff',
     },
   },
+
 };
