@@ -10,7 +10,7 @@ export class CleanCommand {
 
     try {
       const distDir = path.resolve(process.cwd(), 'dist');
-      
+
       if (await FileUtils.exists(distDir)) {
         await FileUtils.removeDir(distDir);
         logger.success('Cleaned build directory');

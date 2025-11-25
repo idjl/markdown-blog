@@ -24,7 +24,10 @@ export class SearchIndexGenerator {
     }));
 
     const searchIndexPath = path.join(outputDir, 'search-index.json');
-    await FileUtils.writeFile(searchIndexPath, JSON.stringify(searchIndex, null, 2));
+    await FileUtils.writeFile(
+      searchIndexPath,
+      JSON.stringify(searchIndex, null, 2)
+    );
   }
 
   /**

@@ -16,25 +16,31 @@ export class TemplateEngine {
    * 加载模板文件
    */
   private async loadTemplates(): Promise<void> {
-    const templatesDir = path.resolve(process.cwd(), this.config.build?.templatesDir || 'src/templates');
-    
+    const templatesDir = path.resolve(
+      process.cwd(),
+      this.config.build?.templatesDir || 'src/templates'
+    );
+
     logger.debug(`Looking for templates in: ${templatesDir}`);
-    
+
     try {
       const pattern = path.join(templatesDir, '*.html');
       logger.debug(`Using glob pattern: ${pattern}`);
-      
+
       const templateFiles = await FileUtils.glob(pattern);
-      
-      logger.debug(`Found ${templateFiles.length} template files:`, templateFiles);
-      
+
+      logger.debug(
+        `Found ${templateFiles.length} template files:`,
+        templateFiles
+      );
+
       for (const file of templateFiles) {
         const templateName = path.basename(file, '.html');
         const content = await FileUtils.readFile(file);
         this.templates.set(templateName, content);
         logger.debug(`Loaded template: ${templateName}`);
       }
-      
+
       logger.success(`Loaded ${templateFiles.length} templates`);
     } catch (error) {
       logger.error('Failed to load templates', error);
@@ -55,7 +61,7 @@ export class TemplateEngine {
     this.templates.set('archive', this.getDefaultArchiveTemplate());
     this.templates.set('search', this.getDefaultSearchTemplate());
     this.templates.set('404', this.getDefault404Template());
-    
+
     logger.info('Loaded default templates');
   }
 
@@ -77,10 +83,10 @@ export class TemplateEngine {
 
     // 渲染模板
     let rendered = template;
-    
+
     // 简单的模板替换
     rendered = this.replaceVariables(rendered, fullData);
-    
+
     // 渲染子模板
     if (templateName !== 'layout') {
       rendered = this.renderLayout(rendered, fullData);
@@ -95,16 +101,16 @@ export class TemplateEngine {
   private replaceVariables(template: string, data: any): string {
     // Handle if/else conditions
     template = this.processConditionals(template, data);
-    
+
     // Handle simple variable replacements
     return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
       const keys = key.trim().split('.');
       let value = data;
-      
+
       for (const k of keys) {
         value = value?.[k];
       }
-      
+
       return value !== undefined ? String(value) : match;
     });
   }
@@ -114,23 +120,29 @@ export class TemplateEngine {
    */
   private processConditionals(template: string, data: any): string {
     // Handle {{#if condition}}...{{/if}}
-    template = template.replace(/\{\{#if\s+([^}]+)\}\}(.*?)\{\{\/if\}\}/gs, (_match, condition, content) => {
-      if (this.evaluateCondition(condition.trim(), data)) {
-        return content;
+    template = template.replace(
+      /\{\{#if\s+([^}]+)\}\}(.*?)\{\{\/if\}\}/gs,
+      (_match, condition, content) => {
+        if (this.evaluateCondition(condition.trim(), data)) {
+          return content;
+        }
+        return '';
       }
-      return '';
-    });
+    );
 
     // Handle {{#if (eq val1 val2)}}...{{/if}}
-    template = template.replace(/\{\{#if\s+\(eq\s+([^)]+)\)\}\}(.*?)\{\{\/if\}\}/gs, (_match, args, content) => {
-      const [val1, val2] = args.trim().split(/\s+/);
-      const actualVal1 = this.getValue(val1, data);
-      const actualVal2 = this.getValue(val2, data);
-      if (actualVal1 === actualVal2) {
-        return content;
+    template = template.replace(
+      /\{\{#if\s+\(eq\s+([^)]+)\)\}\}(.*?)\{\{\/if\}\}/gs,
+      (_match, args, content) => {
+        const [val1, val2] = args.trim().split(/\s+/);
+        const actualVal1 = this.getValue(val1, data);
+        const actualVal2 = this.getValue(val2, data);
+        if (actualVal1 === actualVal2) {
+          return content;
+        }
+        return '';
       }
-      return '';
-    });
+    );
 
     return template;
   }
@@ -154,7 +166,7 @@ export class TemplateEngine {
     if (key.startsWith("'") && key.endsWith("'")) {
       return key.slice(1, -1);
     }
-    
+
     const keys = key.split('.');
     let value = data;
     for (const k of keys) {
@@ -185,7 +197,9 @@ export class TemplateEngine {
    */
   private generateMetaData(data: TemplateData): any {
     return {
-      title: data.title ? `${data.title} - ${this.config.title}` : this.config.title,
+      title: data.title
+        ? `${data.title} - ${this.config.title}`
+        : this.config.title,
       description: data.meta?.description || this.config.description,
       keywords: data.meta?.keywords || this.config.seo.keywords,
       author: data.meta?.author || this.config.author,

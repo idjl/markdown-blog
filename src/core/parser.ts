@@ -131,16 +131,16 @@ export class MarkdownParser {
   async parse(filePath: string): Promise<Post> {
     const content = await fs.readFile(filePath, 'utf-8');
     const { data, content: markdownContent } = matter(content);
-    
+
     const frontMatter = this.normalizeFrontMatter(data);
     const htmlContent = this.md.render(markdownContent);
     const excerpt = this.generateExcerpt(htmlContent);
     const wordCount = this.countWords(markdownContent);
     const readingTime = this.calculateReadingTime(wordCount);
-    
+
     const slug = this.generateSlug(frontMatter.title, filePath);
     const url = `/posts/${slug}/`;
-    
+
     return {
       title: frontMatter.title,
       slug,
@@ -149,7 +149,11 @@ export class MarkdownParser {
       date: new Date(frontMatter.date),
       updated: frontMatter.updated ? new Date(frontMatter.updated) : undefined,
       author: frontMatter.author,
-      tags: Array.isArray(frontMatter.tags) ? frontMatter.tags : (frontMatter.tags ? [frontMatter.tags] : []),
+      tags: Array.isArray(frontMatter.tags)
+        ? frontMatter.tags
+        : frontMatter.tags
+          ? [frontMatter.tags]
+          : [],
       category: frontMatter.category,
       description: frontMatter.description,
       coverImage: frontMatter.coverImage,
@@ -163,19 +167,19 @@ export class MarkdownParser {
 
   private normalizeFrontMatter(data: any): FrontMatter {
     const normalized = { ...data };
-    
+
     // 标准化日期
     if (data.date) {
       normalized.date = dayjs(data.date).toDate();
     } else {
       normalized.date = new Date();
     }
-    
+
     // 标准化更新日期
     if (data.updated) {
       normalized.updated = dayjs(data.updated).toDate();
     }
-    
+
     // 标准化标签
     if (data.tags) {
       if (typeof data.tags === 'string') {
@@ -186,31 +190,31 @@ export class MarkdownParser {
     } else {
       normalized.tags = [];
     }
-    
+
     // 标准化作者
     if (!data.author) {
       normalized.author = 'Anonymous';
     }
-    
+
     return normalized;
   }
 
   private generateExcerpt(html: string, maxLength: number = 200): string {
     // 移除HTML标签
     const text = html.replace(/<[^>]*>/g, '');
-    
+
     if (text.length <= maxLength) {
       return text;
     }
-    
+
     // 截取前maxLength个字符，并在最后一个空格处截断
     const excerpt = text.substring(0, maxLength);
     const lastSpace = excerpt.lastIndexOf(' ');
-    
+
     if (lastSpace > 0) {
       return excerpt.substring(0, lastSpace) + '...';
     }
-    
+
     return excerpt + '...';
   }
 
@@ -234,7 +238,7 @@ export class MarkdownParser {
         .replace(/-+/g, '-')
         .trim();
     }
-    
+
     // 否则从文件名生成
     const fileName = path.basename(filePath, path.extname(filePath));
     return fileName

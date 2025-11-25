@@ -167,9 +167,14 @@ export class FileUtils {
   /**
    * 获取目录中的所有文件
    */
-  static async getFiles(dir: string, recursive: boolean = true): Promise<string[]> {
+  static async getFiles(
+    dir: string,
+    recursive: boolean = true
+  ): Promise<string[]> {
     try {
-      const pattern = recursive ? path.join(dir, '**', '*') : path.join(dir, '*');
+      const pattern = recursive
+        ? path.join(dir, '**', '*')
+        : path.join(dir, '*');
       const files = await this.glob(pattern, { nodir: true });
       return files;
     } catch (error) {
@@ -187,7 +192,10 @@ export class FileUtils {
       const files = await this.glob(pattern);
       return files;
     } catch (error) {
-      logger.error(`Failed to get Markdown files from directory: ${dir}`, error);
+      logger.error(
+        `Failed to get Markdown files from directory: ${dir}`,
+        error
+      );
       throw error;
     }
   }
@@ -195,7 +203,10 @@ export class FileUtils {
   /**
    * 创建目录结构
    */
-  static async createDirStructure(basePath: string, structure: string[]): Promise<void> {
+  static async createDirStructure(
+    basePath: string,
+    structure: string[]
+  ): Promise<void> {
     for (const dir of structure) {
       const fullPath = path.join(basePath, dir);
       await this.ensureDir(fullPath);
@@ -222,6 +233,6 @@ export class FileUtils {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
   }
 }

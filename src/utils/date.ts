@@ -25,7 +25,10 @@ export class DateUtils {
   /**
    * 格式化日期时间
    */
-  static formatDateTime(date: Date | string, format: string = 'YYYY-MM-DD HH:mm:ss'): string {
+  static formatDateTime(
+    date: Date | string,
+    format: string = 'YYYY-MM-DD HH:mm:ss'
+  ): string {
     return dayjs(date).format(format);
   }
 
@@ -74,14 +77,22 @@ export class DateUtils {
   /**
    * 添加时间
    */
-  static add(date: Date | string, amount: number, unit: 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second'): Date {
+  static add(
+    date: Date | string,
+    amount: number,
+    unit: 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second'
+  ): Date {
     return dayjs(date).add(amount, unit).toDate();
   }
 
   /**
    * 减去时间
    */
-  static subtract(date: Date | string, amount: number, unit: 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second'): Date {
+  static subtract(
+    date: Date | string,
+    amount: number,
+    unit: 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second'
+  ): Date {
     return dayjs(date).subtract(amount, unit).toDate();
   }
 
@@ -109,7 +120,11 @@ export class DateUtils {
   /**
    * 检查两个日期是否相同
    */
-  static isSame(date1: Date | string, date2: Date | string, unit?: 'day' | 'month' | 'year'): boolean {
+  static isSame(
+    date1: Date | string,
+    date2: Date | string,
+    unit?: 'day' | 'month' | 'year'
+  ): boolean {
     return dayjs(date1).isSame(dayjs(date2), unit);
   }
 

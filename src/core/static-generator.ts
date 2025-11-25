@@ -20,26 +20,31 @@ export class StaticGenerator {
    */
   async generate(): Promise<BuildResult> {
     logger.info('Starting static site generation...');
-    
+
     try {
       // 1. 加载文章
       const posts = await this.loadPosts();
-      
+
       // 2. 处理数据
       const { categories, tags, archives } = DataProcessor.processPosts(posts);
-      
+
       // 3. 生成页面
       await this.generatePages(posts, categories, tags, archives);
-      
+
       // 4. 复制静态资源
       await this.copyAssets();
-      
+
       // 5. 生成RSS和站点地图
       const rss = await this.generateRSS(posts);
-      const sitemap = await this.generateSitemap(posts, categories, tags, archives);
-      
+      const sitemap = await this.generateSitemap(
+        posts,
+        categories,
+        tags,
+        archives
+      );
+
       logger.success('Static site generation completed!');
-      
+
       return {
         posts,
         pages: this.getGeneratedPages(),
@@ -60,10 +65,13 @@ export class StaticGenerator {
    */
   private async loadPosts(): Promise<Post[]> {
     logger.info('Loading posts...');
-    
-    const postsDir = path.resolve(process.cwd(), this.config.posts?.dir || 'posts');
+
+    const postsDir = path.resolve(
+      process.cwd(),
+      this.config.posts?.dir || 'posts'
+    );
     const posts = await this.postManager.loadPosts(postsDir);
-    
+
     logger.success(`Loaded ${posts.length} posts`);
     return posts;
   }
@@ -78,31 +86,31 @@ export class StaticGenerator {
     archives: any[]
   ): Promise<void> {
     logger.info('Generating pages...');
-    
+
     // 生成首页
     await this.generateHomePages(posts);
-    
+
     // 生成文章页面
     await this.generatePostPages(posts);
-    
+
     // 生成分类页面
     await this.generateCategoryPages(categories);
-    
+
     // 生成标签页面
     await this.generateTagPages(tags);
-    
+
     // 生成归档页面
     await this.generateArchivePages(archives);
-    
+
     // 生成搜索页面
     await this.generateSearchPage();
-    
+
     // 生成404页面
     await this.generate404Page();
-    
+
     // 生成搜索索引
     await this.generateSearchIndex(posts);
-    
+
     logger.success('Pages generated successfully');
   }
 
@@ -111,9 +119,12 @@ export class StaticGenerator {
    */
   private async generateHomePages(posts: Post[]): Promise<void> {
     logger.info('Generating home pages...');
-    
-    const homePages = DataProcessor.generateHomePages(posts, this.config.posts.perPage);
-    
+
+    const homePages = DataProcessor.generateHomePages(
+      posts,
+      this.config.posts.perPage
+    );
+
     for (const pageData of homePages) {
       const templateData: TemplateData = {
         title: this.config.title,
@@ -137,17 +148,31 @@ export class StaticGenerator {
           total: pageData.totalPages,
           hasNext: pageData.page < pageData.totalPages,
           hasPrev: pageData.page > 1,
-          nextUrl: pageData.page < pageData.totalPages ? `/page/${pageData.page + 1}/` : undefined,
-          prevUrl: pageData.page > 1 ? (pageData.page === 2 ? '/' : `/page/${pageData.page - 1}/`) : undefined,
+          nextUrl:
+            pageData.page < pageData.totalPages
+              ? `/page/${pageData.page + 1}/`
+              : undefined,
+          prevUrl:
+            pageData.page > 1
+              ? pageData.page === 2
+                ? '/'
+                : `/page/${pageData.page - 1}/`
+              : undefined,
         },
       };
-      
+
       const html = this.templateEngine.render('index', templateData);
-      
-      const filePath = pageData.page === 1 
-        ? path.join(this.config.build.outputDir, 'index.html')
-        : path.join(this.config.build.outputDir, 'page', String(pageData.page), 'index.html');
-      
+
+      const filePath =
+        pageData.page === 1
+          ? path.join(this.config.build.outputDir, 'index.html')
+          : path.join(
+              this.config.build.outputDir,
+              'page',
+              String(pageData.page),
+              'index.html'
+            );
+
       await FileUtils.writeFile(filePath, html);
       logger.debug(`Generated home page ${pageData.page}`);
     }
@@ -158,10 +183,10 @@ export class StaticGenerator {
    */
   private async generatePostPages(posts: Post[]): Promise<void> {
     logger.info('Generating post pages...');
-    
+
     for (const post of posts) {
       const adjacentPosts = this.postManager.getAdjacentPosts(post);
-      
+
       const templateData: TemplateData = {
         title: post.title,
         content: '',
@@ -182,10 +207,15 @@ export class StaticGenerator {
         prevPost: adjacentPosts.prev,
         nextPost: adjacentPosts.next,
       };
-      
+
       const html = this.templateEngine.render('post', templateData);
-      const filePath = path.join(this.config.build.outputDir, 'posts', post.slug, 'index.html');
-      
+      const filePath = path.join(
+        this.config.build.outputDir,
+        'posts',
+        post.slug,
+        'index.html'
+      );
+
       await FileUtils.writeFile(filePath, html);
       logger.debug(`Generated post page: ${post.slug}`);
     }
@@ -196,9 +226,12 @@ export class StaticGenerator {
    */
   private async generateCategoryPages(categories: any[]): Promise<void> {
     logger.info('Generating category pages...');
-    
-    const categoryPages = DataProcessor.generateCategoryPages(categories, this.config.posts.perPage);
-    
+
+    const categoryPages = DataProcessor.generateCategoryPages(
+      categories,
+      this.config.posts.perPage
+    );
+
     for (const pageData of categoryPages) {
       const templateData: TemplateData = {
         title: `分类: ${pageData.category.name}`,
@@ -223,19 +256,40 @@ export class StaticGenerator {
           total: pageData.totalPages,
           hasNext: pageData.page < pageData.totalPages,
           hasPrev: pageData.page > 1,
-          nextUrl: pageData.page < pageData.totalPages ? `/categories/${pageData.category.slug}/page/${pageData.page + 1}/` : undefined,
-          prevUrl: pageData.page > 1 ? `/categories/${pageData.category.slug}/page/${pageData.page - 1}/` : undefined,
+          nextUrl:
+            pageData.page < pageData.totalPages
+              ? `/categories/${pageData.category.slug}/page/${pageData.page + 1}/`
+              : undefined,
+          prevUrl:
+            pageData.page > 1
+              ? `/categories/${pageData.category.slug}/page/${pageData.page - 1}/`
+              : undefined,
         },
       };
-      
+
       const html = this.templateEngine.render('category', templateData);
-      
-      const filePath = pageData.page === 1
-        ? path.join(this.config.build.outputDir, 'categories', pageData.category.slug, 'index.html')
-        : path.join(this.config.build.outputDir, 'categories', pageData.category.slug, 'page', String(pageData.page), 'index.html');
-      
+
+      const filePath =
+        pageData.page === 1
+          ? path.join(
+              this.config.build.outputDir,
+              'categories',
+              pageData.category.slug,
+              'index.html'
+            )
+          : path.join(
+              this.config.build.outputDir,
+              'categories',
+              pageData.category.slug,
+              'page',
+              String(pageData.page),
+              'index.html'
+            );
+
       await FileUtils.writeFile(filePath, html);
-      logger.debug(`Generated category page: ${pageData.category.slug} - page ${pageData.page}`);
+      logger.debug(
+        `Generated category page: ${pageData.category.slug} - page ${pageData.page}`
+      );
     }
   }
 
@@ -244,9 +298,12 @@ export class StaticGenerator {
    */
   private async generateTagPages(tags: any[]): Promise<void> {
     logger.info('Generating tag pages...');
-    
-    const tagPages = DataProcessor.generateTagPages(tags, this.config.posts.perPage);
-    
+
+    const tagPages = DataProcessor.generateTagPages(
+      tags,
+      this.config.posts.perPage
+    );
+
     for (const pageData of tagPages) {
       const templateData: TemplateData = {
         title: `标签: ${pageData.tag.name}`,
@@ -271,19 +328,40 @@ export class StaticGenerator {
           total: pageData.totalPages,
           hasNext: pageData.page < pageData.totalPages,
           hasPrev: pageData.page > 1,
-          nextUrl: pageData.page < pageData.totalPages ? `/tags/${pageData.tag.slug}/page/${pageData.page + 1}/` : undefined,
-          prevUrl: pageData.page > 1 ? `/tags/${pageData.tag.slug}/page/${pageData.page - 1}/` : undefined,
+          nextUrl:
+            pageData.page < pageData.totalPages
+              ? `/tags/${pageData.tag.slug}/page/${pageData.page + 1}/`
+              : undefined,
+          prevUrl:
+            pageData.page > 1
+              ? `/tags/${pageData.tag.slug}/page/${pageData.page - 1}/`
+              : undefined,
         },
       };
-      
+
       const html = this.templateEngine.render('tag', templateData);
-      
-      const filePath = pageData.page === 1
-        ? path.join(this.config.build.outputDir, 'tags', pageData.tag.slug, 'index.html')
-        : path.join(this.config.build.outputDir, 'tags', pageData.tag.slug, 'page', String(pageData.page), 'index.html');
-      
+
+      const filePath =
+        pageData.page === 1
+          ? path.join(
+              this.config.build.outputDir,
+              'tags',
+              pageData.tag.slug,
+              'index.html'
+            )
+          : path.join(
+              this.config.build.outputDir,
+              'tags',
+              pageData.tag.slug,
+              'page',
+              String(pageData.page),
+              'index.html'
+            );
+
       await FileUtils.writeFile(filePath, html);
-      logger.debug(`Generated tag page: ${pageData.tag.slug} - page ${pageData.page}`);
+      logger.debug(
+        `Generated tag page: ${pageData.tag.slug} - page ${pageData.page}`
+      );
     }
   }
 
@@ -292,9 +370,12 @@ export class StaticGenerator {
    */
   private async generateArchivePages(archives: any[]): Promise<void> {
     logger.info('Generating archive pages...');
-    
-    const archivePages = DataProcessor.generateArchivePages(archives, this.config.posts.perPage);
-    
+
+    const archivePages = DataProcessor.generateArchivePages(
+      archives,
+      this.config.posts.perPage
+    );
+
     for (const pageData of archivePages) {
       const templateData: TemplateData = {
         title: `归档: ${pageData.archive.year}年${pageData.archive.month}月`,
@@ -319,19 +400,42 @@ export class StaticGenerator {
           total: pageData.totalPages,
           hasNext: pageData.page < pageData.totalPages,
           hasPrev: pageData.page > 1,
-          nextUrl: pageData.page < pageData.totalPages ? `/archives/${pageData.archive.year}/${pageData.archive.month}/page/${pageData.page + 1}/` : undefined,
-          prevUrl: pageData.page > 1 ? `/archives/${pageData.archive.year}/${pageData.archive.month}/page/${pageData.page - 1}/` : undefined,
+          nextUrl:
+            pageData.page < pageData.totalPages
+              ? `/archives/${pageData.archive.year}/${pageData.archive.month}/page/${pageData.page + 1}/`
+              : undefined,
+          prevUrl:
+            pageData.page > 1
+              ? `/archives/${pageData.archive.year}/${pageData.archive.month}/page/${pageData.page - 1}/`
+              : undefined,
         },
       };
-      
+
       const html = this.templateEngine.render('archive', templateData);
-      
-      const filePath = pageData.page === 1
-        ? path.join(this.config.build.outputDir, 'archives', String(pageData.archive.year), String(pageData.archive.month), 'index.html')
-        : path.join(this.config.build.outputDir, 'archives', String(pageData.archive.year), String(pageData.archive.month), 'page', String(pageData.page), 'index.html');
-      
+
+      const filePath =
+        pageData.page === 1
+          ? path.join(
+              this.config.build.outputDir,
+              'archives',
+              String(pageData.archive.year),
+              String(pageData.archive.month),
+              'index.html'
+            )
+          : path.join(
+              this.config.build.outputDir,
+              'archives',
+              String(pageData.archive.year),
+              String(pageData.archive.month),
+              'page',
+              String(pageData.page),
+              'index.html'
+            );
+
       await FileUtils.writeFile(filePath, html);
-      logger.debug(`Generated archive page: ${pageData.archive.year}-${pageData.archive.month} - page ${pageData.page}`);
+      logger.debug(
+        `Generated archive page: ${pageData.archive.year}-${pageData.archive.month} - page ${pageData.page}`
+      );
     }
   }
 
@@ -340,7 +444,7 @@ export class StaticGenerator {
    */
   private async generateSearchPage(): Promise<void> {
     logger.info('Generating search page...');
-    
+
     const templateData: TemplateData = {
       title: '搜索',
       content: '',
@@ -358,10 +462,14 @@ export class StaticGenerator {
       theme: this.config.theme,
       config: this.config,
     };
-    
+
     const html = this.templateEngine.render('search', templateData);
-    const filePath = path.join(this.config.build.outputDir, 'search', 'index.html');
-    
+    const filePath = path.join(
+      this.config.build.outputDir,
+      'search',
+      'index.html'
+    );
+
     await FileUtils.writeFile(filePath, html);
     logger.debug('Generated search page');
   }
@@ -371,7 +479,7 @@ export class StaticGenerator {
    */
   private async generate404Page(): Promise<void> {
     logger.info('Generating 404 page...');
-    
+
     const templateData: TemplateData = {
       title: '页面未找到',
       content: '',
@@ -389,10 +497,10 @@ export class StaticGenerator {
       theme: this.config.theme,
       config: this.config,
     };
-    
+
     const html = this.templateEngine.render('404', templateData);
     const filePath = path.join(this.config.build.outputDir, '404.html');
-    
+
     await FileUtils.writeFile(filePath, html);
     logger.debug('Generated 404 page');
   }
@@ -402,26 +510,26 @@ export class StaticGenerator {
    */
   private async copyAssets(): Promise<void> {
     logger.info('Copying static assets...');
-    
+
     const publicDir = path.resolve(process.cwd(), 'public');
     const assetsDir = path.resolve(process.cwd(), 'src/assets');
     const outputAssetsDir = path.join(this.config.build.outputDir, 'assets');
-    
+
     // 复制public目录
     if (await FileUtils.exists(publicDir)) {
       await FileUtils.copy(publicDir, this.config.build.outputDir);
       logger.debug('Copied public assets');
     }
-    
+
     // 复制src/assets目录
     if (await FileUtils.exists(assetsDir)) {
       await FileUtils.copy(assetsDir, outputAssetsDir);
       logger.debug('Copied source assets');
     }
-    
+
     // 生成CSS和JS文件
     await this.generateAssets();
-    
+
     logger.success('Assets copied successfully');
   }
 
@@ -430,13 +538,13 @@ export class StaticGenerator {
    */
   private async generateAssets(): Promise<void> {
     const outputAssetsDir = path.join(this.config.build.outputDir, 'assets');
-    
+
     // 生成CSS文件
     await this.generateCSS(outputAssetsDir);
-    
+
     // 生成JavaScript文件
     await this.generateJS(outputAssetsDir);
-    
+
     // 生成CNAME文件（如果配置了自定义域名）
     await this.generateCNAME();
   }
@@ -447,15 +555,15 @@ export class StaticGenerator {
   private async generateCSS(outputDir: string): Promise<void> {
     const cssDir = path.join(outputDir, 'css');
     await FileUtils.ensureDir(cssDir);
-    
+
     // 主样式文件
     const mainCSS = this.generateMainCSS();
     await FileUtils.writeFile(path.join(cssDir, 'main.css'), mainCSS);
-    
+
     // Prism.js样式文件
     const prismCSS = this.generatePrismCSS();
     await FileUtils.writeFile(path.join(cssDir, 'prism.css'), prismCSS);
-    
+
     logger.debug('Generated CSS files');
   }
 
@@ -828,19 +936,19 @@ pre[class*="language-"] {
   private async generateJS(outputDir: string): Promise<void> {
     const jsDir = path.join(outputDir, 'js');
     await FileUtils.ensureDir(jsDir);
-    
+
     // 主JavaScript文件
     const mainJS = this.generateMainJS();
     await FileUtils.writeFile(path.join(jsDir, 'main.js'), mainJS);
-    
+
     // Prism.js文件
     const prismJS = this.generatePrismJS();
     await FileUtils.writeFile(path.join(jsDir, 'prism.js'), prismJS);
-    
+
     // 搜索功能
     const searchJS = this.generateSearchJS();
     await FileUtils.writeFile(path.join(jsDir, 'search.js'), searchJS);
-    
+
     logger.debug('Generated JavaScript files');
   }
 
@@ -1398,7 +1506,9 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   private async generateCNAME(): Promise<void> {
     if (this.config.url && !this.config.url.includes('github.io')) {
-      const cnameContent = this.config.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      const cnameContent = this.config.url
+        .replace(/^https?:\/\//, '')
+        .replace(/\/$/, '');
       const cnamePath = path.join(this.config.build.outputDir, 'CNAME');
       await FileUtils.writeFile(cnamePath, cnameContent);
       logger.debug('Generated CNAME file');
@@ -1412,11 +1522,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!this.config.plugins.rss.enabled) {
       return '';
     }
-    
+
     logger.info('Generating RSS feed...');
-    
+
     const { Feed } = await import('feed');
-    
+
     const feed = new Feed({
       title: this.config.plugins.rss.title,
       description: this.config.plugins.rss.description,
@@ -1437,7 +1547,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link: this.config.url,
       },
     });
-    
+
     // 添加文章到RSS
     posts.slice(0, 20).forEach(post => {
       feed.addItem({
@@ -1456,11 +1566,11 @@ document.addEventListener('DOMContentLoaded', function() {
         category: post.tags.map(tag => ({ name: tag })),
       });
     });
-    
+
     const rssContent = feed.rss2();
     const rssPath = path.join(this.config.build.outputDir, 'rss.xml');
     await FileUtils.writeFile(rssPath, rssContent);
-    
+
     logger.success('RSS feed generated');
     return rssPath;
   }
@@ -1468,29 +1578,36 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * 生成站点地图
    */
-  private async generateSitemap(posts: Post[], categories: any[], tags: any[], archives: any[]): Promise<string> {
+  private async generateSitemap(
+    posts: Post[],
+    categories: any[],
+    tags: any[],
+    archives: any[]
+  ): Promise<string> {
     if (!this.config.plugins.sitemap.enabled) {
       return '';
     }
-    
+
     logger.info('Generating sitemap...');
-    
+
     const { SitemapStream } = await import('sitemap');
     const { createWriteStream } = await import('fs');
-    
+
     const sitemapPath = path.join(this.config.build.outputDir, 'sitemap.xml');
-    const stream = new SitemapStream({ hostname: this.config.plugins.sitemap.hostname });
+    const stream = new SitemapStream({
+      hostname: this.config.plugins.sitemap.hostname,
+    });
     const writeStream = createWriteStream(sitemapPath);
-    
+
     stream.pipe(writeStream);
-    
+
     // 添加首页
     stream.write({
       url: '/',
       changefreq: 'daily',
       priority: 1.0,
     });
-    
+
     // 添加文章页面
     posts.forEach(post => {
       stream.write({
@@ -1500,7 +1617,7 @@ document.addEventListener('DOMContentLoaded', function() {
         priority: 0.8,
       });
     });
-    
+
     // 添加分类页面
     categories.forEach(category => {
       stream.write({
@@ -1509,7 +1626,7 @@ document.addEventListener('DOMContentLoaded', function() {
         priority: 0.6,
       });
     });
-    
+
     // 添加标签页面
     tags.forEach(tag => {
       stream.write({
@@ -1518,7 +1635,7 @@ document.addEventListener('DOMContentLoaded', function() {
         priority: 0.6,
       });
     });
-    
+
     // 添加归档页面
     archives.forEach(archive => {
       stream.write({
@@ -1527,21 +1644,21 @@ document.addEventListener('DOMContentLoaded', function() {
         priority: 0.5,
       });
     });
-    
+
     // 添加其他页面
     stream.write({
       url: '/search/',
       changefreq: 'monthly',
       priority: 0.4,
     });
-    
+
     stream.end();
-    
+
     await new Promise<void>((resolve, reject) => {
       writeStream.on('finish', resolve);
       writeStream.on('error', reject);
     });
-    
+
     logger.success('Sitemap generated');
     return sitemapPath;
   }
@@ -1553,7 +1670,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!this.config.search.enabled) {
       return;
     }
-    
+
     logger.info('Generating search index...');
     await SearchIndexGenerator.generate(posts, this.config.build.outputDir);
     logger.success('Search index generated');
@@ -1564,11 +1681,6 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   private getGeneratedPages(): string[] {
     // 这里可以实现更复杂的逻辑来跟踪生成的页面
-    return [
-      'index.html',
-      '404.html',
-      'rss.xml',
-      'sitemap.xml',
-    ];
+    return ['index.html', '404.html', 'rss.xml', 'sitemap.xml'];
   }
 }

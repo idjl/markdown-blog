@@ -3,6 +3,7 @@ import { logger } from '../utils';
 import { loadConfig } from '../utils/config';
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 
 interface PreviewOptions {
   port?: number;
@@ -31,8 +32,7 @@ export class PreviewCommand {
     try {
       // 检查构建目录是否存在
       const distDir = path.resolve(process.cwd(), this.config.build.outputDir);
-      const fs = require('fs');
-      
+
       if (!fs.existsSync(distDir)) {
         logger.error(`Build directory does not exist: ${distDir}`);
         logger.info('Please run "npm run build" first');
@@ -64,12 +64,9 @@ export class PreviewCommand {
 
     // SPA支持 - 所有未匹配的路由都返回index.html
     this.app.get('*', (req, res) => {
-      const fs = require('fs');
-      const path = require('path');
-      
       // 尝试找到对应的文件
       let filePath = path.join(distDir, req.path);
-      
+
       // 如果是目录，尝试index.html
       if (req.path.endsWith('/')) {
         filePath = path.join(filePath, 'index.html');
@@ -77,7 +74,7 @@ export class PreviewCommand {
         // 如果没有扩展名，尝试添加.html
         filePath = filePath + '.html';
       }
-      
+
       // 检查文件是否存在
       if (fs.existsSync(filePath)) {
         res.sendFile(filePath);
@@ -131,7 +128,7 @@ export class PreviewCommand {
    */
   async stop(): Promise<void> {
     if (this.server) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.server.close(() => {
           logger.info('Preview server stopped');
           resolve();

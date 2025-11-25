@@ -22,18 +22,18 @@ export class BuildCommand {
     try {
       // 生成静态网站
       const result = await this.generator.generate();
-      
+
       logger.timeEnd('Build time');
       logger.success(`Build completed successfully!`);
       logger.info(`Generated ${result.posts.length} posts`);
       logger.info(`Generated ${result.categories.length} categories`);
       logger.info(`Generated ${result.tags.length} tags`);
       logger.info(`Generated ${result.archives.length} archives`);
-      
+
       if (result.rss) {
         logger.info(`Generated RSS feed: ${result.rss}`);
       }
-      
+
       if (result.sitemap) {
         logger.info(`Generated sitemap: ${result.sitemap}`);
       }
@@ -47,7 +47,7 @@ export class BuildCommand {
 // CLI入口点
 if (require.main === module) {
   const buildCommand = new BuildCommand();
-  buildCommand.execute().catch((error) => {
+  buildCommand.execute().catch(error => {
     logger.error('Build command failed', error);
     process.exit(1);
   });

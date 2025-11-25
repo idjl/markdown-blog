@@ -4,6 +4,7 @@ import { logger } from '../utils';
 import { loadConfig } from '../utils/config';
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import chokidar from 'chokidar';
 
 interface DevOptions {
@@ -31,7 +32,8 @@ export class DevCommand {
   async execute(options: DevOptions = {}): Promise<void> {
     const port = options.port || this.config.dev.port;
     const host = options.host || this.config.dev.host;
-    const open = options.open !== undefined ? options.open : this.config.dev.open;
+    const open =
+      options.open !== undefined ? options.open : this.config.dev.open;
 
     logger.info(`Starting development server on ${host}:${port}...`);
 
@@ -60,7 +62,7 @@ export class DevCommand {
    */
   private async build(): Promise<void> {
     logger.info('Building site...');
-    
+
     try {
       await this.generator.generate();
       logger.success('Build completed');
@@ -79,9 +81,6 @@ export class DevCommand {
 
     // SPA支持 - 所有未匹配的路由都返回index.html
     this.app.get('*', (req, res) => {
-      const fs = require('fs');
-      const path = require('path');
-
       const root = process.cwd();
       let requestPath = req.path || '/';
       if (requestPath.startsWith('/')) requestPath = requestPath.slice(1);
@@ -104,7 +103,11 @@ export class DevCommand {
         res.sendFile(absPath);
       } else {
         // 返回404页面
-        const notFoundAbs = path.resolve(root, this.config.build.outputDir, '404.html');
+        const notFoundAbs = path.resolve(
+          root,
+          this.config.build.outputDir,
+          '404.html'
+        );
         if (fs.existsSync(notFoundAbs)) {
           res.status(404).sendFile(notFoundAbs);
         } else {
@@ -140,20 +143,16 @@ export class DevCommand {
     const templatesDir = path.resolve(process.cwd(), 'src/templates');
     const publicDir = path.resolve(process.cwd(), 'public');
 
-    this.watcher = chokidar.watch([
-      postsDir,
-      templatesDir,
-      publicDir,
-    ], {
-      ignored: /(^|[\/\\])\../, // 忽略隐藏文件
+    this.watcher = chokidar.watch([postsDir, templatesDir, publicDir], {
+      ignored: /(^|[/\\])\../, // 忽略隐藏文件
       persistent: true,
       usePolling: true,
       ignoreInitial: true,
     });
 
-    this.watcher.on('change', async (filePath) => {
+    this.watcher.on('change', async filePath => {
       logger.info(`File changed: ${filePath}`);
-      
+
       try {
         await this.build();
         logger.success('Site rebuilt successfully');
@@ -162,9 +161,9 @@ export class DevCommand {
       }
     });
 
-    this.watcher.on('add', async (filePath) => {
+    this.watcher.on('add', async filePath => {
       logger.info(`File added: ${filePath}`);
-      
+
       try {
         await this.build();
         logger.success('Site rebuilt successfully');
@@ -173,9 +172,9 @@ export class DevCommand {
       }
     });
 
-    this.watcher.on('unlink', async (filePath) => {
+    this.watcher.on('unlink', async filePath => {
       logger.info(`File removed: ${filePath}`);
-      
+
       try {
         await this.build();
         logger.success('Site rebuilt successfully');
@@ -190,7 +189,11 @@ export class DevCommand {
   /**
    * 启动服务器
    */
-  private async startServer(port: number, host: string, open: boolean): Promise<void> {
+  private async startServer(
+    port: number,
+    host: string,
+    open: boolean
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       this.server = this.app.listen(port, host, (error?: Error) => {
         if (error) {
@@ -217,14 +220,14 @@ export class DevCommand {
    */
   async stop(): Promise<void> {
     if (this.server) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.server.close(() => {
           logger.info('Development server stopped');
           resolve();
         });
       });
     }
-    
+
     if (this.watcher) {
       await this.watcher.close();
       logger.info('File watcher stopped');

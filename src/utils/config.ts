@@ -11,7 +11,9 @@ export function loadConfig(): BlogConfig {
     const config = require(configPath);
     return config.default || config;
   } catch (error) {
-    console.warn('Warning: blog.config.js not found, using default configuration');
+    console.warn(
+      'Warning: blog.config.js not found, using default configuration'
+    );
     return getDefaultConfig();
   }
 }
@@ -25,7 +27,7 @@ function getDefaultConfig(): BlogConfig {
     baseUrl: '/',
     language: 'zh-CN',
     timezone: 'Asia/Shanghai',
-    
+
     theme: {
       primary: '#3b82f6',
       secondary: '#64748b',
@@ -35,7 +37,7 @@ function getDefaultConfig(): BlogConfig {
       text: '#1f2937',
       textSecondary: '#6b7280',
     },
-    
+
     darkTheme: {
       primary: '#60a5fa',
       secondary: '#94a3b8',
@@ -45,11 +47,11 @@ function getDefaultConfig(): BlogConfig {
       text: '#f9fafb',
       textSecondary: '#d1d5db',
     },
-    
+
     social: {
       rss: true,
     },
-    
+
     posts: {
       dir: 'posts',
       perPage: 10,
@@ -60,7 +62,7 @@ function getDefaultConfig(): BlogConfig {
       showTags: true,
       showCategories: true,
     },
-    
+
     comments: {
       provider: 'utterances',
       repo: '',
@@ -68,22 +70,22 @@ function getDefaultConfig(): BlogConfig {
       theme: 'github-light',
       darkTheme: 'github-dark',
     },
-    
+
     search: {
       enabled: true,
       placeholder: '搜索文章...',
       maxResults: 10,
     },
-    
+
     analytics: {},
-    
+
     seo: {
       keywords: ['blog', 'markdown'],
       author: 'Anonymous',
       twitterCard: 'summary_large_image',
       ogImage: '/assets/og-image.png',
     },
-    
+
     build: {
       outputDir: 'dist',
       assetsDir: 'assets',
@@ -92,14 +94,14 @@ function getDefaultConfig(): BlogConfig {
       minify: true,
       sourcemap: false,
     },
-    
+
     dev: {
       port: 3000,
       host: 'localhost',
       open: true,
       hot: true,
     },
-    
+
     plugins: {
       syntaxHighlight: {
         enabled: true,
@@ -123,7 +125,10 @@ function getDefaultConfig(): BlogConfig {
   };
 }
 
-export function mergeConfig(base: BlogConfig, overrides: Partial<BlogConfig>): BlogConfig {
+export function mergeConfig(
+  base: BlogConfig,
+  overrides: Partial<BlogConfig>
+): BlogConfig {
   return {
     ...base,
     ...overrides,

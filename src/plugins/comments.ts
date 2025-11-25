@@ -27,7 +27,9 @@ export class CommentsPlugin {
         this.setupGiscus(context);
         break;
       default:
-        console.warn(`Unknown comments provider: ${this.config.comments.provider}`);
+        console.warn(
+          `Unknown comments provider: ${this.config.comments.provider}`
+        );
     }
   }
 
@@ -36,7 +38,7 @@ export class CommentsPlugin {
    */
   private setupUtterances(context: any): void {
     const utterancesConfig = this.config.comments;
-    
+
     if (!utterancesConfig.repo) {
       console.warn('Utterances repo not configured');
       return;
@@ -62,8 +64,12 @@ export class CommentsPlugin {
    */
   private setupGiscus(context: any): void {
     const giscusConfig = this.config.comments;
-    
-    if (!giscusConfig.repo || !giscusConfig.repoId || !giscusConfig.categoryId) {
+
+    if (
+      !giscusConfig.repo ||
+      !giscusConfig.repoId ||
+      !giscusConfig.categoryId
+    ) {
       console.warn('Giscus configuration incomplete');
       return;
     }

@@ -7,7 +7,7 @@ export class PostManager {
   private parser: MarkdownParser;
   private posts: Post[] = [];
 
-  constructor(_config?: any) {
+  constructor() {
     this.parser = new MarkdownParser();
   }
 
@@ -16,12 +16,12 @@ export class PostManager {
    */
   async loadPosts(postsDir: string): Promise<Post[]> {
     logger.info(`Loading posts from: ${postsDir}`);
-    
+
     try {
       // 获取所有Markdown文件
       const files = await FileUtils.getMarkdownFiles(postsDir);
       logger.info(`Found ${files.length} markdown files`);
-      
+
       // 解析所有文章
       const posts: Post[] = [];
       for (const file of files) {
@@ -36,13 +36,13 @@ export class PostManager {
           logger.error(`Failed to parse post: ${file}`, error);
         }
       }
-      
+
       // 按日期排序（最新的在前）
       posts.sort((a, b) => b.date.getTime() - a.date.getTime());
-      
+
       this.posts = posts;
       logger.success(`Loaded ${posts.length} posts`);
-      
+
       return posts;
     } catch (error) {
       logger.error('Failed to load posts', error);
@@ -94,7 +94,7 @@ export class PostManager {
     return this.posts.filter(post => {
       const postYear = post.date.getFullYear();
       const postMonth = post.date.getMonth() + 1;
-      
+
       if (month) {
         return postYear === year && postMonth === month;
       }
@@ -107,15 +107,25 @@ export class PostManager {
    */
   searchPosts(query: string): Post[] {
     const searchTerm = query.toLowerCase();
-    
+
     return this.posts.filter(post => {
       const titleMatch = post.title.toLowerCase().includes(searchTerm);
       const contentMatch = post.content.toLowerCase().includes(searchTerm);
-      const tagMatch = post.tags.some(tag => tag.toLowerCase().includes(searchTerm));
-      const categoryMatch = post.category?.toLowerCase().includes(searchTerm) || false;
-      const descriptionMatch = post.description?.toLowerCase().includes(searchTerm) || false;
-      
-      return titleMatch || contentMatch || tagMatch || categoryMatch || descriptionMatch;
+      const tagMatch = post.tags.some(tag =>
+        tag.toLowerCase().includes(searchTerm)
+      );
+      const categoryMatch =
+        post.category?.toLowerCase().includes(searchTerm) || false;
+      const descriptionMatch =
+        post.description?.toLowerCase().includes(searchTerm) || false;
+
+      return (
+        titleMatch ||
+        contentMatch ||
+        tagMatch ||
+        categoryMatch ||
+        descriptionMatch
+      );
     });
   }
 
@@ -124,7 +134,7 @@ export class PostManager {
    */
   getCategories(): Array<{ name: string; count: number; posts: Post[] }> {
     const categoryMap = new Map<string, Post[]>();
-    
+
     this.posts.forEach(post => {
       if (post.category) {
         if (!categoryMap.has(post.category)) {
@@ -133,7 +143,7 @@ export class PostManager {
         categoryMap.get(post.category)!.push(post);
       }
     });
-    
+
     return Array.from(categoryMap.entries()).map(([name, posts]) => ({
       name,
       count: posts.length,
@@ -146,7 +156,7 @@ export class PostManager {
    */
   getTags(): Array<{ name: string; count: number; posts: Post[] }> {
     const tagMap = new Map<string, Post[]>();
-    
+
     this.posts.forEach(post => {
       post.tags.forEach(tag => {
         if (!tagMap.has(tag)) {
@@ -155,7 +165,7 @@ export class PostManager {
         tagMap.get(tag)!.push(post);
       });
     });
-    
+
     return Array.from(tagMap.entries()).map(([name, posts]) => ({
       name,
       count: posts.length,
@@ -166,20 +176,25 @@ export class PostManager {
   /**
    * 获取归档数据
    */
-  getArchives(): Array<{ year: number; month: number; count: number; posts: Post[] }> {
+  getArchives(): Array<{
+    year: number;
+    month: number;
+    count: number;
+    posts: Post[];
+  }> {
     const archiveMap = new Map<string, Post[]>();
-    
+
     this.posts.forEach(post => {
       const year = post.date.getFullYear();
       const month = post.date.getMonth() + 1;
       const key = `${year}-${month}`;
-      
+
       if (!archiveMap.has(key)) {
         archiveMap.set(key, []);
       }
       archiveMap.get(key)!.push(post);
     });
-    
+
     return Array.from(archiveMap.entries())
       .map(([key, posts]) => {
         const [year, month] = key.split('-').map(Number);
@@ -200,15 +215,20 @@ export class PostManager {
    * 获取相邻文章
    */
   getAdjacentPosts(currentPost: Post): { prev?: Post; next?: Post } {
-    const currentIndex = this.posts.findIndex(post => post.slug === currentPost.slug);
-    
+    const currentIndex = this.posts.findIndex(
+      post => post.slug === currentPost.slug
+    );
+
     if (currentIndex === -1) {
       return {};
     }
-    
+
     return {
       prev: currentIndex > 0 ? this.posts[currentIndex - 1] : undefined,
-      next: currentIndex < this.posts.length - 1 ? this.posts[currentIndex + 1] : undefined,
+      next:
+        currentIndex < this.posts.length - 1
+          ? this.posts[currentIndex + 1]
+          : undefined,
     };
   }
 
@@ -218,16 +238,18 @@ export class PostManager {
   getRelatedPosts(currentPost: Post, limit: number = 5): Post[] {
     const relatedPosts = this.posts.filter(post => {
       if (post.slug === currentPost.slug) return false;
-      
+
       // 检查是否有相同的标签
-      const hasCommonTags = post.tags.some(tag => currentPost.tags.includes(tag));
-      
+      const hasCommonTags = post.tags.some(tag =>
+        currentPost.tags.includes(tag)
+      );
+
       // 检查是否属于相同的分类
       const hasSameCategory = post.category === currentPost.category;
-      
+
       return hasCommonTags || hasSameCategory;
     });
-    
+
     // 按日期排序并限制数量
     return relatedPosts
       .sort((a, b) => b.date.getTime() - a.date.getTime())
@@ -255,7 +277,7 @@ export class PostManager {
    */
   getPostsByYear(): Array<{ year: number; count: number; posts: Post[] }> {
     const yearMap = new Map<number, Post[]>();
-    
+
     this.posts.forEach(post => {
       const year = post.date.getFullYear();
       if (!yearMap.has(year)) {
@@ -263,7 +285,7 @@ export class PostManager {
       }
       yearMap.get(year)!.push(post);
     });
-    
+
     return Array.from(yearMap.entries())
       .map(([year, posts]) => ({
         year,
@@ -284,12 +306,18 @@ export class PostManager {
     tags: number;
     archives: number;
   } {
-    const totalWords = this.posts.reduce((sum, post) => sum + (post.wordCount || 0), 0);
-    const totalReadingTime = this.posts.reduce((sum, post) => sum + (post.readingTime || 0), 0);
+    const totalWords = this.posts.reduce(
+      (sum, post) => sum + (post.wordCount || 0),
+      0
+    );
+    const totalReadingTime = this.posts.reduce(
+      (sum, post) => sum + (post.readingTime || 0),
+      0
+    );
     const categories = this.getCategories().length;
     const tags = this.getTags().length;
     const archives = this.getArchives().length;
-    
+
     return {
       totalPosts: this.posts.length,
       totalWords,

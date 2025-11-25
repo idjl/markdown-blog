@@ -22,11 +22,11 @@ export class SyntaxHighlightPlugin {
 
     // 配置markdown-it以支持语法高亮
     const md = context.parser.md;
-    
+
     md.set({
       highlight: (code: string, lang: string) => {
         return this.highlightCode(code, lang);
-      }
+      },
     });
   }
 
