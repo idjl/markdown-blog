@@ -14,9 +14,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write src/**/*.{ts,js,json,css,html}",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "deploy": "npm run build && npm run deploy:gh-pages",
-    "deploy:gh-pages": "gh-pages -d dist"
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "markdown",

@@ -2,19 +2,26 @@
 
 在推送代码到 GitHub 之前，请确保完成以下配置：
 
-## ✅ GitHub 仓库配置（必须）
+## ✅ GitHub 仓库配置（必须）⚠️
 
-### 1. 启用 GitHub Pages
-- [ ] 进入仓库 `Settings` → `Pages`
-- [ ] 在 `Source` 下拉菜单中选择 **`GitHub Actions`**
-- [ ] 保存设置
+### 1. 启用 GitHub Pages（最重要！）
+- [ ] 访问：https://github.com/idjl/markdown-blog/settings/pages
+- [ ] 在 `Build and deployment` 部分
+- [ ] 在 `Source` 下拉菜单中选择 **`GitHub Actions`** ⚠️
+- [ ] **不要**选择 "Deploy from a branch"
+- [ ] 页面会自动保存
 
 ### 2. 配置 Actions 权限
-- [ ] 进入仓库 `Settings` → `Actions` → `General`
+- [ ] 访问：https://github.com/idjl/markdown-blog/settings/actions
 - [ ] 滚动到 `Workflow permissions` 部分
 - [ ] 选择 **`Read and write permissions`**
 - [ ] 勾选 `Allow GitHub Actions to create and approve pull requests`
 - [ ] 点击 `Save` 保存
+
+### 3. 删除旧的 gh-pages 分支（如果存在）
+- [ ] 访问：https://github.com/idjl/markdown-blog/branches
+- [ ] 如果看到 `gh-pages` 分支，点击删除图标
+- [ ] 这个分支是旧的部署方式创建的，会导致冲突
 
 ## ✅ 本地配置检查
 
