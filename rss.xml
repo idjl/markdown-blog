@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Markdown Blog RSS</title>
+        <link>https://idjl.github.io/markdown-blog/</link>
+        <description>Latest posts from Markdown Blog</description>
+        <lastBuildDate>Mon, 15 Dec 2025 13:21:26 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>Markdown Blog</generator>
+        <language>zh-CN</language>
+        <image>
+            <title>Markdown Blog RSS</title>
+            <url>https://idjl.github.io/markdown-blog//assets/og-image.png</url>
+            <link>https://idjl.github.io/markdown-blog/</link>
+        </image>
+        <copyright>© 2025 idjl</copyright>
+        <atom:link href="https://idjl.github.io/markdown-blog//rss.xml" rel="self" type="application/rss+xml"/>
+    </channel>
+</rss>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 页面未找到 - Markdown Blog</title>
+  <meta name="description" content="页面未找到">
+  <meta name="keywords" content="404,页面未找到">
+  <meta name="author" content="idjl">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="404 - 页面未找到 - Markdown Blog">
+  <meta property="og:description" content="页面未找到">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://idjl.github.io/markdown-blog//404.html">
+  <meta property="og:image" content="/assets/og-image.png">
+  <meta property="og:site_name" content="Markdown Blog">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="404 - 页面未找到 - Markdown Blog">
+  <meta name="twitter:description" content="页面未找到">
+  <meta name="twitter:image" content="/assets/og-image.png">
+  
+  <!-- Theme -->
+  <script>
+    // Theme detection
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/prism.css">
+  
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="Markdown Blog RSS" href="/rss.xml">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+</head>
+<body class="bg-background text-text min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-6">
+        <div class="flex items-center">
+          <a href="/" class="text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
+            Markdown Blog
+          </a>
+        </div>
+        
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            首页
+          </a>
+          <a href="/categories/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            分类
+          </a>
+          <a href="/tags/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            标签
+          </a>
+          <a href="/archives/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            归档
+          </a>
+          <a href="/search/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            搜索
+          </a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Theme toggle -->
+          <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="dark:hidden">🌙</span>
+            <span class="hidden dark:inline">☀️</span>
+          </button>
+          
+          <!-- Mobile menu -->
+          <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></span>
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></span>
+            <span class="block w-6 h-0.5 bg-gray-600 dark:bg-gray-300"></span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile navigation -->
+      <nav id="mobile-menu" class="md:hidden pb-6 hidden">
+        <div class="flex flex-col space-y-4">
+          <a href="/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            首页
+          </a>
+          <a href="/categories/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            分类
+          </a>
+          <a href="/tags/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            标签
+          </a>
+          <a href="/archives/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            归档
+          </a>
+          <a href="/search/" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors">
+            搜索
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Main content -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {{{content}}}
+  </main>
+  
+  <!-- Footer -->
+  <footer class="border-t border-gray-200 dark:border-gray-800 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
+          © {{currentYear}} idjl. Powered by 
+          <a href="https://github.com/yourusername/markdown-blog" class="text-primary hover:underline">
+            Markdown Blog
+          </a>
+        </div>
+        
+        <div class="flex space-x-6">
+          
+          <a href="https://github.com/yourusername" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            GitHub
+          </a>
+          
+          
+          <a href="https://twitter.com/yourusername" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            Twitter
+          </a>
+          
+          
+          <a href="mailto:your.email@example.com" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            Email
+          </a>
+          
+          
+          <a href="/rss.xml" class="text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+            RSS
+          </a>
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/prism.js"></script>
+</body>
+</html>
