@@ -1,7 +1,5 @@
 node_modules/
 dist/
-public/
-posts/
 .env
 .env.local
 .env.development.local

@@ -31,9 +31,9 @@ module.exports = {
   
   // 社交链接
   social: {
-    github: 'yourusername',
-    twitter: 'yourusername',
-    email: 'your.email@example.com',
+    github: 'idjl',
+    twitter: '',
+    email: '',
     rss: true,
   },
   
@@ -51,7 +51,7 @@ module.exports = {
   // 评论系统
   comments: {
     provider: 'utterances', // utterances, giscus
-    repo: 'yourusername/your-repo-name',
+    repo: 'idjl/markdown-blog',
     issueTerm: 'pathname',
     theme: 'github-light',
     darkTheme: 'github-dark',

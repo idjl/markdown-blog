@@ -80,8 +80,10 @@ npm run preview
 ### Deployment
 
 1. Push to GitHub
-2. Enable GitHub Pages in repository settings
+2. Configure GitHub Pages in repository settings (see [detailed setup guide](docs/GITHUB_PAGES_SETUP.md))
 3. GitHub Actions will automatically deploy your blog
+
+**Important**: Make sure to configure GitHub Pages source to "GitHub Actions" in your repository settings. See [docs/GITHUB_PAGES_SETUP.md](docs/GITHUB_PAGES_SETUP.md) for detailed instructions.
 
 ## Configuration
 

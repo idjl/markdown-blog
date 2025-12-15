@@ -31,12 +31,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/markdown-blog.git"
+    "url": "https://github.com/idjl/markdown-blog.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/markdown-blog/issues"
+    "url": "https://github.com/idjl/markdown-blog/issues"
   },
-  "homepage": "https://yourusername.github.io/markdown-blog/",
+  "homepage": "https://idjl.github.io/markdown-blog/",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
